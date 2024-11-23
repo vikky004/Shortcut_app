@@ -1,5 +1,6 @@
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class StationsDistance {
 
@@ -7,13 +8,13 @@ public class StationsDistance {
     public String UpdateInBetweenDistance(Util db, int StationOneId, int StationTwoId, int InBetweenDistance){
 
         try {
-            PreparedStatement query = db.con.prepareStatement("Update StationsDistance from StationsDistance where (StationOneId = ? and StationTwoId = ?) Or (StationOneId = ? and StationTwoId = ?) set InBetweenDistance = ?");
-            query.setInt(1,StationOneId);
-            query.setInt(2,StationTwoId);
+            PreparedStatement query = db.con.prepareStatement("Update StationsDistance set InBetweenDistance = ? where (StationOneId = ? and StationTwoId = ?) or (StationOneId = ? and StationTwoId = ?)");
+            query.setInt(1,InBetweenDistance);
+            query.setInt(2,StationOneId);
             query.setInt(3,StationTwoId);
-            query.setInt(4,StationOneId);
-            query.setInt(5,InBetweenDistance);
-            ResultSet resultSet = query.executeQuery();
+            query.setInt(4,StationTwoId);
+            query.setInt(5,StationOneId);
+            query.executeUpdate();
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -31,16 +32,19 @@ public class StationsDistance {
                 query.setInt(2, StationTwoId);
                 query.setInt(3, StationTwoId);
                 query.setInt(4, StationOneId);
-                ResultSet resultSet = query.executeQuery();
-                if (resultSet == null) {
-                    query = db.con.prepareStatement("Insert Into StationsDistance Values (?,?,?)");
+                ResultSet resultrows = query.executeQuery();
+                if (resultrows == null) {
+                    query = db.con.prepareStatement("Insert Into StationsDistance(StationOneId, StationTwoId, InBetweenDistance) Values (?,?,?)", Statement.RETURN_GENERATED_KEYS);
                     query.setInt(1, StationOneId);
                     query.setInt(2, StationTwoId);
                     query.setInt(3, InBetweenDistance);
-                    resultSet = query.executeQuery();
+                    query.executeUpdate();
+                    ResultSet keyset = query.getGeneratedKeys();
+                    keyset.next();
                 } else {
                     UpdateInBetweenDistance(db, StationOneId, StationTwoId, InBetweenDistance);
                 }
+                db.con.close();
             }
             else{
                 return null;
