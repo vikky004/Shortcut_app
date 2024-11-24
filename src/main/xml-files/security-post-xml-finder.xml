@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Validation-XML>
+    <stations name="stations">
+        <XMLFormat>Station</XMLFormat>
+    </stations>
+    <stationDistance name="stationsDistance">
+        <XMLFormat>Station-Distance</XMLFormat>
+    </stationDistance>
+</Validation-XML>

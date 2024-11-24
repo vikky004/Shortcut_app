@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Validation-rules>
+    <stations>
+        <params name="StationName" regex="^[a-zA-Z0-9_]{3,20}$"></params>
+    </stations>
+    <stationsDistance>
+        <params name="StationOneId" regex="^\d+$"></params>
+        <params name="StationTwoId" regex="^\d+$"></params>
+        <params name="InBetweenDistance" regex="^[a-zA-Z0-9_]{3,20}$"></params>
+    </stationsDistance>
+</Validation-rules>
