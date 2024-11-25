@@ -17,7 +17,7 @@ public class SecurityParamFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        String URI = (request.getRequestURI()).split("/")[1];
+        String URI = (request.getServletPath()).split("/")[1];
 
         List<ValidationRule> ValidationRules =  XMLLoaderAndParser.getXMLFormat(URI,request.getMethod());
         Map<String,String[]> RequestParams = request.getParameterMap();

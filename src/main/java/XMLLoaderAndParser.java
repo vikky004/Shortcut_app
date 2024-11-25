@@ -5,6 +5,7 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,18 +30,21 @@ public class XMLLoaderAndParser {
 
         //Load and read the XML file the XMLFormat - specified URI
         try {
+//            File xmlFile = new File("src/main/xml-files/security-post.xml");
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse("src/main/xml-files/security-post.xml");
+            Document document = builder.parse("/Users/vignesh-tt0497/eclipse-workspace/shortcut/Shortcut_app/src/main/xml-files/security-post.xml");
 
+            document.getDocumentElement().normalize();
             //Get the Parameters for the specified URI
-            NodeList paramList = document.getElementsByTagName(Node);
-
-            for (int i = 0; i < paramList.getLength(); i++){
-                Node node = paramList.item(i);
-
-                if(node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE){
-                    Element element = (Element) node;
+            NodeList nodeList = document.getElementsByTagName(Node);
+            Node node = nodeList.item(0);
+            Element nodeElement = (Element) node;
+            NodeList paramList = nodeElement.getElementsByTagName("params");
+            if(node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE){
+                for (int i = 0; i < paramList.getLength(); i++){
+                    Node params = paramList.item(i);
+                    Element element = (Element) params;
                     String name = element.getAttribute("name");
                     String regex = element.getAttribute("regex");
                     rules.add(new ValidationRule(name,regex));
