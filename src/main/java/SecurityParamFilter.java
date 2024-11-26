@@ -17,16 +17,20 @@ public class SecurityParamFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        String URI = (request.getServletPath()).split("/")[1];
+        String URI = (request.getPathInfo()).split("/")[1];
 
-        List<ValidationRule> ValidationRules =  XMLLoaderAndParser.getXMLFormat(URI,request.getMethod());
-        Map<String,String[]> RequestParams = request.getParameterMap();
-        String ValidationError = APIParamValidator.ParamValidator(ValidationRules, RequestParams);
-        if(ValidationError != null){
-            ResponseUtil rm = new ResponseUtil(true,ValidationError,404);
-            rm.sen_response((HttpServletResponse) servletResponse,new JsonObject());
+        try {
+            Map<String, String> ValidationRules = XMLLoaderAndParser.getXMLFormat(URI, request.getMethod());
+            Map<String, String[]> RequestParams = request.getParameterMap();
+            String ValidationError = APIParamValidator.ParamValidator(ValidationRules, RequestParams);
+            if (ValidationError != null) {
+                throw new Exception("Provide proper value for node :" + ValidationError);
+            }
+        } catch (Exception e) {
+            ResponseUtil rm = new ResponseUtil(true, e.toString(), 404);
+            rm.sen_response((HttpServletResponse) servletResponse, new JsonObject());
+            throw new RuntimeException(e);
         }
-
         filterChain.doFilter(request,servletResponse);
     }
 

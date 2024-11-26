@@ -7,10 +7,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class XMLLoaderAndParser {
-    public static List<ValidationRule> getXMLFormat(String Node, String ReqMethod){
+    public static Map<String, String> getXMLFormat(String Node, String ReqMethod){
         String XMLFile = null;
 
         //Find the XML file
@@ -26,7 +28,7 @@ public class XMLLoaderAndParser {
                 break;
         }
 
-        List<ValidationRule> rules = new ArrayList<>();
+        Map<String, String> rules = new HashMap<>();
 
         //Load and read the XML file the XMLFormat - specified URI
         try {
@@ -47,7 +49,7 @@ public class XMLLoaderAndParser {
                     Element element = (Element) params;
                     String name = element.getAttribute("name");
                     String regex = element.getAttribute("regex");
-                    rules.add(new ValidationRule(name,regex));
+                    rules.put(name,regex);
                 }
             }
 
