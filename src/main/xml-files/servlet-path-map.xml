@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<api-mapping>
+    <api>
+        <path>/stations</path>
+        <handler-class>StationsHandler</handler-class>
+    </api>
+    <api>
+        <path>/stationsDistance</path>
+        <handler-class>StationsDistanceHandler</handler-class>
+    </api>
+</api-mapping>

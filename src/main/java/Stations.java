@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 public class Stations extends HttpServlet {
@@ -31,37 +32,42 @@ public class Stations extends HttpServlet {
             //SuccessMessage and StatusCode
             String message = "Error printing message";
             int statusCode = 404;
+            Class<?> handlerClass = Class.forName(XMLLoaderAndParser.getHandlerClass((req.getPathInfo())));
+            Object handlerInstance = handlerClass.getDeclaredConstructor().newInstance();
+            Method method = handlerClass.getMethod("handleProcess", HttpServletRequest.class, HttpServletResponse.class);
+            method.invoke(handlerInstance, req, res);
 
-            //Filter based on the method
-            switch (requestType) {
-                case "GET":
-                    responseJson = getShortcut(RequestParams);
-                    message = "Successfully Retrieved";
-                    statusCode = 200;
-                    break;
-                case "POST":
-                    responseJson = CreateStations(db, stationsDetails.StationOneId, stationsDetails.StationTwoId, stationsDetails.InBetweenDistance);
-                    if (responseJson.get("data") != null) {
-                        message = "Successfully Created";
-                        statusCode = 201;
-                    } else {
-                        message = "StationId does not exist";
-                        statusCode = 404;
-                    }
-                    break;
-                case "UPDATE":
-                    responseJson = UpdateStations();
-                    message = "Successfully Updated";
-                    statusCode = 200;
-                    break;
-                case "DELETE":
-                    responseJson = DeleteShortcut();
-                    message = "Successfully Deleted";
-                    statusCode = 204;
-                    break;
-            }
-            ResponseUtil rm = new ResponseUtil(true,message,statusCode);
-            rm.sen_response(res,responseJson);
+//            //Filter based on the method
+//            switch (requestType) {
+//                case "GET":
+//                    responseJson = getShortcut(RequestParams);
+//                    message = "Successfully Retrieved";
+//                    statusCode = 200;
+//                    break;
+//                case "POST":
+//                    responseJson = CreateStations(db, stationsDetails.StationOneId, stationsDetails.StationTwoId, stationsDetails.InBetweenDistance);
+//                    if (responseJson.get("data") != null) {
+//                        message = "Successfully Created";
+//                        statusCode = 201;
+//                    } else {
+//                        message = "StationId does not exist";
+//                        statusCode = 404;
+//                    }
+//                    break;
+//                case "UPDATE":
+//                    responseJson = UpdateStations();
+//                    message = "Successfully Updated";
+//                    statusCode = 200;
+//                    break;
+//                case "DELETE":
+//                    responseJson = DeleteShortcut();
+//                    message = "Successfully Deleted";
+//                    statusCode = 204;
+//                    break;
+//            }
+            //Send Response
+//            ResponseUtil rm = new ResponseUtil(false,message,statusCode);
+//            rm.sen_response(res,responseJson);
         } catch (Exception e) {
             ResponseUtil rm = new ResponseUtil(true,e.toString(),500);
             rm.sen_response(res,responseJson);

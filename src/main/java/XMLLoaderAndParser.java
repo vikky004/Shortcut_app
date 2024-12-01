@@ -35,7 +35,7 @@ public class XMLLoaderAndParser {
 //            File xmlFile = new File("src/main/xml-files/security-post.xml");
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse("/Users/vignesh-tt0497/eclipse-workspace/shortcut/Shortcut_app/src/main/xml-files/security-post.xml");
+            Document document = builder.parse("/Users/vignesh-tt0497/eclipse-workspace/shortcut/Shortcut_app/src/main/xml-files/" + XMLFile);
 
             document.getDocumentElement().normalize();
             //Get the Parameters for the specified URI
@@ -57,5 +57,37 @@ public class XMLLoaderAndParser {
             throw new RuntimeException(e);
         }
         return rules;
+    }
+
+    public static String getHandlerClass(String ServletPath) {
+        String XMLFile = "servlet-path-map.xml";
+        String handlerClass = null;
+        try {
+//            File xmlFile = new File("src/main/xml-files/security-post.xml");
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse("/Users/vignesh-tt0497/eclipse-workspace/shortcut/Shortcut_app/src/main/xml-files/" + XMLFile);
+
+            document.getDocumentElement().normalize();
+            //Get the Parameters for the specified URI
+            NodeList nodeList = document.getElementsByTagName("api");
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node apiNode = nodeList.item(i);
+                if (apiNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element apiElement = (Element) apiNode;
+                    String path = apiElement.getElementsByTagName("path").item(0).getTextContent();
+                    if (path.equals(ServletPath)) {
+                        handlerClass = apiElement.getElementsByTagName("handler-class").item(0).getTextContent();
+                        break;
+                    }
+                }
+            }
+            if(handlerClass == null){
+                throw new Exception("No handler class found for the specified URI");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return handlerClass;
     }
 }
