@@ -1,10 +1,7 @@
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +29,9 @@ public class Stations extends HttpServlet {
             //SuccessMessage and StatusCode
             String message = "Error printing message";
             int statusCode = 404;
-            Class<?> handlerClass = Class.forName(XMLLoaderAndParser.getHandlerClass((req.getPathInfo())));
+            Map<String, String> servletPathMap = CacheManager.getInstance().getServletPathMap();
+            String handlerClassName = servletPathMap.get(req.getPathInfo());
+            Class<?> handlerClass = Class.forName(handlerClassName);
             Object handlerInstance = handlerClass.getDeclaredConstructor().newInstance();
             Method method = handlerClass.getMethod("handleProcess", HttpServletRequest.class, HttpServletResponse.class);
             method.invoke(handlerInstance, req, res);

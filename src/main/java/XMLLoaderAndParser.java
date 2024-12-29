@@ -5,13 +5,13 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class XMLLoaderAndParser {
+
+    private final static String SERVLET_PATH_MAP = "servlet-path-map.xml";
+
     public static Map<String, String> getXMLFormat(String Node, String ReqMethod){
         String XMLFile = null;
 
@@ -59,9 +59,9 @@ public class XMLLoaderAndParser {
         return rules;
     }
 
-    public static String getHandlerClass(String ServletPath) {
-        String XMLFile = "servlet-path-map.xml";
-        String handlerClass = null;
+    public static Map<String, String> loadServletPathMap() {
+        String XMLFile = SERVLET_PATH_MAP;
+        Map<String, String> servletMap = new HashMap<>();
         try {
 //            File xmlFile = new File("src/main/xml-files/security-post.xml");
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -76,18 +76,13 @@ public class XMLLoaderAndParser {
                 if (apiNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element apiElement = (Element) apiNode;
                     String path = apiElement.getElementsByTagName("path").item(0).getTextContent();
-                    if (path.equals(ServletPath)) {
-                        handlerClass = apiElement.getElementsByTagName("handler-class").item(0).getTextContent();
-                        break;
-                    }
+                    String handlerClass = apiElement.getElementsByTagName("handler-class").item(0).getTextContent();
+                    servletMap.put(path, handlerClass);
                 }
-            }
-            if(handlerClass == null){
-                throw new Exception("No handler class found for the specified URI");
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return handlerClass;
+        return servletMap;
     }
 }
